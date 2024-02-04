@@ -1,14 +1,21 @@
-pipeline{
+pipeline {
     agent any
-    stages {
-    stage ("check-out"){
-        steps {
-            echo "Hai this nani"
+        stages {
+        stage ("check-out"){
+            steps {
+                echo "Hai this nani"
+                }
             }
+            stage ("Build mvn packages") {
+            steps {
+                sh "mvn clean install"
+                }
         }
-        stage ("Build mvn packages") {
-        steps {
-            sh "mvn clean install"
+        stage ("deploye to tomcat") {
+            steps {
+                sshagent(['cal-pro']) {
+                 sh "scp -o StrictHostKeyChecking=no target/Calculator-1.0-SNAPSHOT.jar ubuntu@3.110.94.73:/opt/tomcat/webapps"
+                }
             }
         }
     }
